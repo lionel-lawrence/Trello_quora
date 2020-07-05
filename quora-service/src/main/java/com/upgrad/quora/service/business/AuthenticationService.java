@@ -1,14 +1,16 @@
 package com.upgrad.quora.service.business;
 
-
-
-
+import com.upgrad.quora.service.dao.UserDao;
+import com.upgrad.quora.service.entity.UserAuthEntity;
+import com.upgrad.quora.service.entity.UserEntity;
+import com.upgrad.quora.service.exception.*;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
-import org.springframework.transaction.annotation.Propagation;
 import org.springframework.transaction.annotation.Transactional;
+import org.springframework.transaction.annotation.Propagation;
 
-import javax.transaction.Transactional;
+import java.time.ZonedDateTime;
+import java.util.UUID;
 
 @Service
 public class AuthenticationService {
@@ -16,10 +18,54 @@ public class AuthenticationService {
     private UserDao userDao;
 
     @Autowired
-    private UserAuthDao userAuthDao;
-
-    @Autowired
     private PasswordCryptographyProvider passwordCryptographyProvider;
 
-    @Transactional
+    @Transactional(propagation = Propagation.REQUIRED)
+    public UserAuthEntity signin(final String name, final String password) throws AuthenticationFailedException {
+        UserEntity entity = userDao.getUser_UserName(name);
+        if (entity == null){
+            final String code = "ATH-001";
+            final String comment = "This username does not exist";
+            throw new AuthenticationFailedException(code, comment);
+        }
+        final String encryptedPassword = passwordCryptographyProvider.encrypt(password, entity.getSalt());
+        boolean passwordSuccessfulFlag = encryptedPassword.equals(entity.getPassword());
+        final String code = "ATH-002";
+        final String comment = "Password failed";
+        if(passwordSuccessfulFlag == false){
+            throw new AuthenticationFailedException(code, comment);
+        }
+        JwtTokenProvider jwtTokenProvider = new JwtTokenProvider(password);
+        UserAuthEntity userAuthEntity = new UserAuthEntity();
+        userAuthEntity.setUuid(UUID.randomUUID().toString());
+        userAuthEntity.setUserEntity(entity);
+        final ZonedDateTime now = ZonedDateTime.now();
+        final ZonedDateTime expiresAt = now.plusHours(8);
+        userAuthEntity.setAccessToken(jwtTokenProvider.generateToken(entity.getUuid(), now, expiresAt));
+        userAuthEntity.setLoginAt(now);
+        userAuthEntity.setExpiresAt(expiresAt);
+
+        userDao.createToken(userAuthEntity);
+        userDao.updateUserEntity(entity);
+
+        return userAuthEntity;
+
+    }
+
+
+    @Transactional(propagation = Propagation.REQUIRED)
+    public UserEntity signup(UserEntity userEntity) throws SignUpRestrictedException{
+        if (userDao.getUser_UserName(userEntity.getUserName()) != null) {
+            throw new SignUpRestrictedException("SGR-001", "Try any other Username, this Username has already been taken ");
+        }
+        if (userDao.getUser_EmailId(userEntity.getEmail()) != null){
+            throw new SignUpRestrictedException("SGR-002", "This user has already been registered, try with any other emailId");
+        }
+
+        userEntity.setUuid(UUID.randomUUID().toString());
+        String[] textEncryption = passwordCryptographyProvider.encrypt(userEntity.getPassword());
+        userEntity.setSalt(textEncryption[0]);
+        userEntity.setPassword(textEncryption[1]);
+        return userDao.createUser(userEntity);
+    }
 }
