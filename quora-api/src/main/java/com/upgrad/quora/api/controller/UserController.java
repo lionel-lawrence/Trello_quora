@@ -66,12 +66,18 @@ public class UserController {
     }
 
     @RequestMapping(method = RequestMethod.POST, path = "/user/signout", produces = MediaType.APPLICATION_JSON_UTF8_VALUE)
-    public ResponseEntity<SignoutResponse> signout(@RequestHeader("accessToken") final String token) throws SignOutRestrictedException
-    {
+    public ResponseEntity<SignoutResponse> signout(@RequestHeader("accessToken") final String token) throws SignOutRestrictedException, AuthenticationFailedException {
+
+        UserAuthEntity userAuthEntity = authService.signout(token);
+
+        HttpHeaders headers = new HttpHeaders();
+        headers.add("access-token", userAuthEntity.getAccessToken());
 
         SignoutResponse signoutResponse = new SignoutResponse();
-        signoutResponse.setId();
+        signoutResponse.setId(userAuthEntity.getUserEntity().getUuid());
         signoutResponse.setMessage("SIGNED OUT SUCCESSFULLY");
+
+        return new ResponseEntity<SignoutResponse>(signoutResponse, headers, HttpStatus.OK);
     }
 
 }

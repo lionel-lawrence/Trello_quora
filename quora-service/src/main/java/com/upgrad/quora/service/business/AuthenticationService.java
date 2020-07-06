@@ -22,14 +22,14 @@ public class AuthenticationService {
 
     @Transactional(propagation = Propagation.REQUIRED)
     public UserAuthEntity signin(final String name, final String password) throws AuthenticationFailedException {
-        UserEntity entity = userDao.getUser_UserName(name);
-        if (entity == null){
+        UserEntity userEntity = userDao.getUser_UserName(name);
+        if (userEntity == null){
             final String code = "ATH-001";
             final String comment = "This username does not exist";
             throw new AuthenticationFailedException(code, comment);
         }
-        final String encryptedPassword = passwordCryptographyProvider.encrypt(password, entity.getSalt());
-        boolean passwordSuccessfulFlag = encryptedPassword.equals(entity.getPassword());
+        final String encryptedPassword = passwordCryptographyProvider.encrypt(password, userEntity.getSalt());
+        boolean passwordSuccessfulFlag = encryptedPassword.equals(userEntity.getPassword());
         final String code = "ATH-002";
         final String comment = "Password failed";
         if(passwordSuccessfulFlag == false){
@@ -38,15 +38,15 @@ public class AuthenticationService {
         JwtTokenProvider jwtTokenProvider = new JwtTokenProvider(password);
         UserAuthEntity userAuthEntity = new UserAuthEntity();
         userAuthEntity.setUuid(UUID.randomUUID().toString());
-        userAuthEntity.setUserEntity(entity);
+        userAuthEntity.setUserEntity(userEntity);
         final ZonedDateTime now = ZonedDateTime.now();
         final ZonedDateTime expiresAt = now.plusHours(8);
-        userAuthEntity.setAccessToken(jwtTokenProvider.generateToken(entity.getUuid(), now, expiresAt));
+        userAuthEntity.setAccessToken(jwtTokenProvider.generateToken(userEntity.getUuid(), now, expiresAt));
         userAuthEntity.setLoginAt(now);
         userAuthEntity.setExpiresAt(expiresAt);
 
         userDao.createToken(userAuthEntity);
-        userDao.updateUserEntity(entity);
+        userDao.updateUserEntity(userEntity);
 
         return userAuthEntity;
 
@@ -71,16 +71,18 @@ public class AuthenticationService {
 
     @Transactional(propagation = Propagation.REQUIRED)
     public UserAuthEntity signout(final String accessToken) throws AuthenticationFailedException{
-        UserAuthEntity authEntity = userDao.getUserAuthByToken(accessToken);
-        if (authEntity == null){
+        UserAuthEntity userAuthEntity = userDao.getUserAuthByToken(accessToken);
+        if (userAuthEntity == null){
             final String code = "SGR-001";
             final String comment = "User is not Signed in";
             throw new AuthenticationFailedException(code, comment);
         }
         else {
-            UserAuthEntity userAuthEntity = new UserAuthEntity();
-
+            final ZonedDateTime logoutAt = ZonedDateTime.now();
+            userAuthEntity.setLogoutAt(logoutAt);
+//            userDao.updateUserEntity(userAuthEntity);
         }
+        return userAuthEntity;
     }
 
 }
