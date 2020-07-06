@@ -68,4 +68,19 @@ public class AuthenticationService {
         userEntity.setPassword(textEncryption[1]);
         return userDao.createUser(userEntity);
     }
+
+    @Transactional(propagation = Propagation.REQUIRED)
+    public UserAuthEntity signout(final String accessToken) throws AuthenticationFailedException{
+        UserAuthEntity authEntity = userDao.getUserAuthByToken(accessToken);
+        if (authEntity == null){
+            final String code = "SGR-001";
+            final String comment = "User is not Signed in";
+            throw new AuthenticationFailedException(code, comment);
+        }
+        else {
+            UserAuthEntity userAuthEntity = new UserAuthEntity();
+
+        }
+    }
+
 }
