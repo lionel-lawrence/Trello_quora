@@ -11,6 +11,7 @@ C:\Trello_quora\quora-service\src\main\java\com\upgrad\quora\service\dao\UserDao
 C:\Trello_quora\quora-service\src\main\java\com\upgrad\quora\service\entity\UserEntity.java
 C:\Trello_quora\quora-service\src\main\java\com\upgrad\quora\service\exception\AuthenticationFailedException.java
 C:\Trello_quora\quora-service\src\main\java\com\upgrad\quora\service\ServiceConfiguration.java
+C:\Trello_quora\quora-service\src\main\java\com\upgrad\quora\service\business\CommonUserService.java
 C:\Trello_quora\quora-service\src\main\java\com\upgrad\quora\service\common\ErrorCode.java
 C:\Trello_quora\quora-service\src\main\java\com\upgrad\quora\service\common\UnexpectedException.java
 C:\Trello_quora\quora-service\src\main\java\com\upgrad\quora\service\exception\SignOutRestrictedException.java
