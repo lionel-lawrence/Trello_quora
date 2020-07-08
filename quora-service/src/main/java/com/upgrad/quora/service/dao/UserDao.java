@@ -60,4 +60,11 @@ public class UserDao {
         entityManager.merge(updateUserEntity);
     }
 
+    public UserEntity deleteUser(final String uid){
+        try {
+            return entityManager.createNamedQuery("deleteUser", UserEntity.class).setParameter("userId", uid).getSingleResult();
+        } catch (NoResultException nre) {
+            return null;
+        }
+    }
 }

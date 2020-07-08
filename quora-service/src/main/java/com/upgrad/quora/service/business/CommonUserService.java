@@ -36,5 +36,12 @@ public class CommonUserService {
         }
         return userEntity;
     }
+    public void noAdminUSer(UserEntity userEntity) throws AuthorizationFailedException {
+    	if(userEntity == null){
+    		final String code = "ATHR-003";
+    		final String comment = "Unauthorized Access, Entered user is not an admin";
+    		throw new AuthorizationFailedException(code, comment);
+    	}
+    }
 
 }
