@@ -13,8 +13,37 @@ public class AdminService {
     @Autowired
     UserDao userDao;
     
-    public void deleteUser(final String uid) {
-    	userDao.deleteUser(uid);
+    public UserEntity deleteUser(final String accessToken, final String uuid) throws AuthorizationFailedException, UserNotFoundException {
+
+        UserAuthEntity userAuthEntity = this.userDao.getUserAuthByToken(accessToken);
+
+        if (userAuthEntity == null){
+            final String code = "ATHR-001";
+            final String comment = "User has not signed in";
+            throw new AuthorizationFailedException(code, comment);
+        }
+        if(userAuthEntity.getLogoutAt() != null){
+            final String code = "ATHR-002";
+            final String comment = "User is signed out";
+            throw new AuthorizationFailedException(code,comment);
+        }
+        if(!userAuthEntity.getUserEntity().getRole().equals("admin")){
+            final String code = "ATHR-003";
+            final String comment = "Unauthorized Access, Entered user is not an admin";
+            throw new AuthorizationFailedException(code, comment);
+        }
+
+        UserEntity user = this.userDao.getUserById(uuid);
+
+        if(user == null){
+            final String code = "USR-001";
+            final String comment = "User with entered uuid to be deleted does not exist";
+            throw new UserNotFoundException(code , comment);
+        }
+
+        UserEntity deletedUser = this.userDao.deleteUser(uuid);
+        return deletedUser;
+
     }
 
 }
