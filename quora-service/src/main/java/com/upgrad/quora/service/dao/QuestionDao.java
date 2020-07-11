@@ -1,11 +1,12 @@
 package com.upgrad.quora.service.dao;
 
 import com.upgrad.quora.service.entity.QuestionEntity;
+import com.upgrad.quora.service.entity.UserEntity;
 import org.springframework.stereotype.Repository;
 import org.springframework.transaction.annotation.Transactional;
-import javax.persistence.NoResultException;
 
 import javax.persistence.EntityManager;
+import javax.persistence.NoResultException;
 import javax.persistence.PersistenceContext;
 import java.util.List;
 
@@ -39,6 +40,18 @@ public class QuestionDao {
     @Transactional
     public void updateQuestion(QuestionEntity questionEntity) {
         entityManager.merge(questionEntity);
+    }
+
+    @Transactional
+    public void deleteQuestion(QuestionEntity questionEntity) {
+        entityManager.remove(questionEntity);
+    }
+
+    public List<QuestionEntity> getAllQuestionsByUser(final UserEntity userId) {
+        return entityManager
+                .createNamedQuery("getQuestionByUser", QuestionEntity.class)
+                .setParameter("user", userId)
+                .getResultList();
     }
 
 
