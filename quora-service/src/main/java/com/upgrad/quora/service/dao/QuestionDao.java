@@ -9,7 +9,9 @@ import javax.persistence.PersistenceContext;
 
 @Repository
 public class QuestionDao {
-    @PersistenceContext private EntityManager entityManager;
+
+    @PersistenceContext
+    private EntityManager entityManager;
 
     @Transactional
     public QuestionEntity createQuestion(QuestionEntity questionEntity){
