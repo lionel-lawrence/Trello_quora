@@ -5,6 +5,7 @@ import com.upgrad.quora.service.dao.UserDao;
 import com.upgrad.quora.service.entity.QuestionEntity;
 import com.upgrad.quora.service.entity.UserAuthEntity;
 import com.upgrad.quora.service.exception.AuthorizationFailedException;
+import com.upgrad.quora.service.exception.InvalidQuestionException;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Propagation;
@@ -51,6 +52,33 @@ public class QuestionService {
                     "ATHR-002", "User is signed out.Sign in first to get all questions");
         }
         return questionDao.getAllQuestions();
+    }
+
+    @Transactional(propagation = Propagation.REQUIRED)
+    public QuestionEntity editQuestion(
+            final String accessToken, final String questionId, final String content)
+            throws AuthorizationFailedException, InvalidQuestionException {
+        UserAuthEntity userAuthEntity = userDao.getUserAuthByToken(accessToken);
+        if (userAuthEntity == null) {
+            throw new AuthorizationFailedException("ATHR-001", "User has not signed in");
+        } else if (userAuthEntity.getLogoutAt() != null) {
+            throw new AuthorizationFailedException(
+                    "ATHR-002", "User is signed out.Sign in first to edit the question");
+        }
+        QuestionEntity questionEntity = questionDao.getQuestionById(questionId);
+        if (questionEntity == null) {
+            throw new InvalidQuestionException("QUES-001", "Entered question uuid does not exist");
+        }
+        if (!questionEntity
+                .getUserEntity()
+                .getUuid()
+                .equals(userAuthEntity.getUserEntity().getUuid())) {
+            throw new AuthorizationFailedException(
+                    "ATHR-003", "Only the question owner can edit the question");
+        }
+        questionEntity.setContent(content);
+        questionDao.updateQuestion(questionEntity);
+        return questionEntity;
     }
 
 }
