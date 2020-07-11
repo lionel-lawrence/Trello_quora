@@ -6,6 +6,7 @@ import org.springframework.transaction.annotation.Transactional;
 
 import javax.persistence.EntityManager;
 import javax.persistence.PersistenceContext;
+import java.util.List;
 
 @Repository
 public class QuestionDao {
@@ -17,6 +18,10 @@ public class QuestionDao {
     public QuestionEntity createQuestion(QuestionEntity questionEntity){
         entityManager.persist(questionEntity);
         return questionEntity;
+    }
+
+    public List<QuestionEntity> getAllQuestions() {
+        return entityManager.createNamedQuery("getAllQuestions", QuestionEntity.class).getResultList();
     }
 
 }
