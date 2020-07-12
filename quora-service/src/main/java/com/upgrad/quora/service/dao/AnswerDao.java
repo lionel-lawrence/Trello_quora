@@ -7,6 +7,7 @@ import org.springframework.transaction.annotation.Transactional;
 import javax.persistence.EntityManager;
 import javax.persistence.NoResultException;
 import javax.persistence.PersistenceContext;
+import java.util.List;
 
 @Repository
 public class AnswerDao {
@@ -43,4 +44,12 @@ public class AnswerDao {
         }
         return deleteAnswer;
     }
+
+    public List<AnswerEntity> getAllAnswersToQuestion(final String questionId) {
+        return entityManager
+                .createNamedQuery("getAllAnswersToQuestion", AnswerEntity.class)
+                .setParameter("uuid", questionId)
+                .getResultList();
+    }
+
 }
