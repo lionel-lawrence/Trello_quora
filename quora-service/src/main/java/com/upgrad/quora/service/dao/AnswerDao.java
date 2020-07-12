@@ -34,4 +34,13 @@ public class AnswerDao {
     public void updateAnswer(AnswerEntity answerEntity) {
         entityManager.merge(answerEntity);
     }
+
+    @Transactional
+    public AnswerEntity deleteAnswer(final String answerId) {
+        AnswerEntity deleteAnswer = getAnswerById(answerId);
+        if (deleteAnswer != null) {
+            entityManager.remove(deleteAnswer);
+        }
+        return deleteAnswer;
+    }
 }
