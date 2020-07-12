@@ -38,14 +38,19 @@ public class AnswerService {
             throws AuthorizationFailedException, InvalidQuestionException {
         UserAuthEntity userAuthEntity = userDao.getUserAuthByToken(accessToken);
         if (userAuthEntity == null) {
-            throw new AuthorizationFailedException("ATHR-001", "User has not signed in");
+            final String code = "ATHR-001";
+            final String comment = "User has not signed in";
+            throw new AuthorizationFailedException(code, comment);
         } else if (userAuthEntity.getLogoutAt() != null) {
-            throw new AuthorizationFailedException(
-                    "ATHR-002", "User is signed out.Sign in first to post an answer");
+            final String code = "ATHR-002";
+            final String comment = "User is signed out.Sign in first to post an answer";
+            throw new AuthorizationFailedException(code, comment);
         }
         QuestionEntity questionEntity = questionDao.getQuestionById(questionId);
         if (questionEntity == null) {
-            throw new InvalidQuestionException("QUES-001", "The question entered is invalid");
+            final String code = "QUES-001";
+            final String comment = "The question entered is invalid";
+            throw new InvalidQuestionException(code, comment);
         }
         answerEntity.setUuid(UUID.randomUUID().toString());
         answerEntity.setDate(ZonedDateTime.now());
@@ -60,18 +65,24 @@ public class AnswerService {
             throws AnswerNotFoundException, AuthorizationFailedException {
         UserAuthEntity userAuthEntity = userDao.getUserAuthByToken(accessToken);
         if (userAuthEntity == null) {
-            throw new AuthorizationFailedException("ATHR-001", "User has not signed in");
+            final String code = "ATHR-001";
+            final String comment = "User has not signed in";
+            throw new AuthorizationFailedException(code,comment);
         } else if (userAuthEntity.getLogoutAt() != null) {
-            throw new AuthorizationFailedException(
-                    "ATHR-002", "User is signed out.Sign in first to edit an answer");
+            final String code = "ATHR-002";
+            final String comment = "User is signed out.Sign in first to edit an answer";
+            throw new AuthorizationFailedException(code, comment);
         }
         AnswerEntity answerEntity = answerDao.getAnswerById(answerId);
         if (answerEntity == null) {
-            throw new AnswerNotFoundException("ANS-001", "Entered answer uuid does not exist");
+            final String code = "ANS-001";
+            final String comment = "Entered answer uuid does not exist";
+            throw new AnswerNotFoundException(code, comment);
         }
         if (!answerEntity.getUserEntity().getUuid().equals(userAuthEntity.getUserEntity().getUuid())) {
-            throw new AuthorizationFailedException(
-                    "ATHR-003", "Only the answer owner can edit the answer");
+            final String code = "ATHR-003";
+            final String comment = "Only the answer owner can edit the answer";
+            throw new AuthorizationFailedException(code, comment);
         }
         answerEntity.setAnswer(newAnswer);
         answerDao.updateAnswer(answerEntity);
@@ -84,15 +95,20 @@ public class AnswerService {
 
         UserAuthEntity userAuthEntity = userDao.getUserAuthByToken(accessToken);
         if (userAuthEntity == null) {
-            throw new AuthorizationFailedException("ATHR-001", "User has not signed in");
+            final String code = "ATHR-001";
+            final String comment = "User has not signed in";
+            throw new AuthorizationFailedException(code, comment);
         } else if (userAuthEntity.getLogoutAt() != null) {
-            throw new AuthorizationFailedException(
-                    "ATHR-002", "User is signed out.Sign in first to delete an answer");
+            final String code ="ATHR-002";
+            final String comment = "User is signed out.Sign in first to delete an answer";
+            throw new AuthorizationFailedException(code,comment);
         }
 
         AnswerEntity answerEntity = answerDao.getAnswerById(answerId);
         if (answerEntity == null) {
-            throw new AnswerNotFoundException("ANS-001", "Entered answer uuid does not exist");
+            final String code = "ANS-001";
+            final String comment = "Entered answer uuid does not exist";
+            throw new AnswerNotFoundException(code ,comment );
         }
         if (userAuthEntity.getUserEntity().getRole().equals("admin")
                 || answerEntity
