@@ -21,21 +21,39 @@ public class RestExceptionHandler {
 	@ExceptionHandler(AuthenticationFailedException.class)
 	public ResponseEntity<ErrorResponse> authenticationFailedException(AuthenticationFailedException exc,
 			WebRequest request) {
-		return new ResponseEntity<ErrorResponse>(new ErrorResponse().code(exc.getCode()).message(exc.getErrorMessage()),
-				HttpStatus.FORBIDDEN);
+		if (exc.getCode() == "SGR-001") {
+
+			return new ResponseEntity<ErrorResponse>(
+					new ErrorResponse().code(exc.getCode()).message(exc.getErrorMessage()), HttpStatus.UNAUTHORIZED);
+		} else {
+			return new ResponseEntity<ErrorResponse>(
+					new ErrorResponse().code(exc.getCode()).message(exc.getErrorMessage()), HttpStatus.UNAUTHORIZED);
+		}
 	}
 
 	@ExceptionHandler(AuthorizationFailedException.class)
 	public ResponseEntity<ErrorResponse> authorizationfailedException(AuthorizationFailedException exc,
 			WebRequest request) {
-		return new ResponseEntity<ErrorResponse>(new ErrorResponse().code(exc.getCode()).message(exc.getErrorMessage()),
-				HttpStatus.UNAUTHORIZED);
+		if (exc.getCode() == "ATHR-001" || exc.getCode() == "ATHR-003" || exc.getCode() == "ATHR-002") {
+
+			return new ResponseEntity<ErrorResponse>(
+					new ErrorResponse().code(exc.getCode()).message(exc.getErrorMessage()), HttpStatus.FORBIDDEN);
+		} else {
+			return new ResponseEntity<ErrorResponse>(
+					new ErrorResponse().code(exc.getCode()).message(exc.getErrorMessage()), HttpStatus.UNAUTHORIZED);
+		}
 	}
 
 	@ExceptionHandler(SignUpRestrictedException.class)
 	public ResponseEntity<ErrorResponse> signuprestrictedException(SignUpRestrictedException exc, WebRequest request) {
-		return new ResponseEntity<ErrorResponse>(new ErrorResponse().code(exc.getCode()).message(exc.getErrorMessage()),
-				HttpStatus.UNAUTHORIZED);
+		if (exc.getCode() == "SGR-002" || exc.getCode() == "SGR-001") {
+			return new ResponseEntity<ErrorResponse>(
+					new ErrorResponse().code(exc.getCode()).message(exc.getErrorMessage()), HttpStatus.CONFLICT);
+
+		} else {
+			return new ResponseEntity<ErrorResponse>(
+					new ErrorResponse().code(exc.getCode()).message(exc.getErrorMessage()), HttpStatus.UNAUTHORIZED);
+		}
 	}
 
 	@ExceptionHandler(AnswerNotFoundException.class)
@@ -51,10 +69,17 @@ public class RestExceptionHandler {
 	}
 
 	@ExceptionHandler(SignOutRestrictedException.class)
-	public ResponseEntity<ErrorResponse> signoutrestrictedException(SignOutRestrictedException exc, WebRequest request) {
-		return new ResponseEntity<ErrorResponse>(new ErrorResponse().code(exc.getCode()).message(exc.getErrorMessage()),
-				HttpStatus.UNAUTHORIZED);
+	public ResponseEntity<ErrorResponse> signoutrestrictedException(SignOutRestrictedException exc,
+			WebRequest request) {
+		if (exc.getCode() == "SGR-001") {
+			return new ResponseEntity<ErrorResponse>(
+					new ErrorResponse().code(exc.getCode()).message(exc.getErrorMessage()), HttpStatus.UNAUTHORIZED);
+		} else {
+			return new ResponseEntity<ErrorResponse>(
+					new ErrorResponse().code(exc.getCode()).message(exc.getErrorMessage()), HttpStatus.UNAUTHORIZED);
+		}
 	}
+
 	@ExceptionHandler(UserNotFoundException.class)
 	public ResponseEntity<ErrorResponse> usernotfoundException(UserNotFoundException exc, WebRequest request) {
 		return new ResponseEntity<ErrorResponse>(new ErrorResponse().code(exc.getCode()).message(exc.getErrorMessage()),
