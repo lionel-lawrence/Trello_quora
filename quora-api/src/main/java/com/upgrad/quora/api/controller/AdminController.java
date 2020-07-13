@@ -23,6 +23,8 @@ public class AdminController {
 
     @Autowired
     AdminService adminService;
+    
+    //This controller emphasizes on deleting a user from the Quora Application based on various parameters. Only an admin is authorized to access this endpoint.
 
     @RequestMapping(method = RequestMethod.DELETE, path = "/admin/user/{userId}", produces = MediaType.APPLICATION_JSON_UTF8_VALUE)
     public ResponseEntity<UserDeleteResponse> deleteUser(@RequestHeader("authorization") final String accessToken, @PathVariable("userId") final String userId) throws UserNotFoundException, AuthenticationFailedException, AuthorizationFailedException {
