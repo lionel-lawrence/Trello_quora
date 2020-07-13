@@ -31,7 +31,8 @@ public class AnswerService {
     @Autowired
     private QuestionDao questionDao;
 
-
+//This service class holds the logic for the functioning of the Answer controller and connection with the Answer Dao layer.
+    
     @Transactional(propagation = Propagation.REQUIRED)
     public AnswerEntity createAnswer(
             final String accessToken, final String questionId, AnswerEntity answerEntity)
