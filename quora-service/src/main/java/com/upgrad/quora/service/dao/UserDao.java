@@ -69,4 +69,10 @@ public class UserDao {
         }
         return user;
     }
+
+    @Transactional
+    public void updateUserAuth(final UserAuthEntity updatedUserAuthEntity) {
+        entityManager.merge(updatedUserAuthEntity);
+    }
+
 }

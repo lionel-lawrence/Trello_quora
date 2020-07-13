@@ -1,19 +1,18 @@
 package com.upgrad.quora.service.business;
 
-import java.time.ZonedDateTime;
-import java.util.UUID;
-
-import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.stereotype.Service;
-import org.springframework.transaction.annotation.Propagation;
-import org.springframework.transaction.annotation.Transactional;
-
 import com.upgrad.quora.service.dao.UserDao;
 import com.upgrad.quora.service.entity.UserAuthEntity;
 import com.upgrad.quora.service.entity.UserEntity;
 import com.upgrad.quora.service.exception.AuthenticationFailedException;
 import com.upgrad.quora.service.exception.SignOutRestrictedException;
 import com.upgrad.quora.service.exception.SignUpRestrictedException;
+import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.stereotype.Service;
+import org.springframework.transaction.annotation.Propagation;
+import org.springframework.transaction.annotation.Transactional;
+
+import java.time.ZonedDateTime;
+import java.util.UUID;
 
 @Service
 public class AuthenticationService {
@@ -75,18 +74,17 @@ public class AuthenticationService {
 	}
 
 	@Transactional(propagation = Propagation.REQUIRED)
-	public UserAuthEntity signout(final String accessToken) throws SignOutRestrictedException {
+	public UserEntity signout(final String accessToken) throws SignOutRestrictedException {
 		UserAuthEntity userAuthEntity = userDao.getUserAuthByToken(accessToken);
 		if (userAuthEntity == null) {
 			final String code = "SGR-001";
 			final String comment = "User is not Signed in";
 			throw new SignOutRestrictedException(code, comment);
-		} else {
+		}
 			final ZonedDateTime logoutAt = ZonedDateTime.now();
 			userAuthEntity.setLogoutAt(logoutAt);
-//            userDao.updateUserEntity(userAuthEntity);
-			return userAuthEntity;
-		}
+			userDao.updateUserAuth(userAuthEntity);
+			return userAuthEntity.getUserEntity();
 	}
 
 	private boolean userNameInUse(final String userName) {
