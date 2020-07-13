@@ -13,6 +13,7 @@ public class AdminService {
 	@Autowired
 	UserDao userDao;
 
+	//This Admin service class holds the logic for the delete functioning of the Admin controller.
 	public UserEntity deleteUser(final String accessToken, final String uuid)
 			throws AuthorizationFailedException, UserNotFoundException {
 
