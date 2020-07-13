@@ -12,6 +12,8 @@ import org.springframework.stereotype.Service;
 public class CommonUserService {
     @Autowired
     UserDao userDao;
+    
+    //This service class holds the logic for the functioning of the Common controller and connection with the Common user Dao layer.
 
     public void tokenCheckIsValid(final String accessToken) throws AuthorizationFailedException {
         UserAuthEntity userAuthEntity = userDao.getUserAuthByToken(accessToken);
