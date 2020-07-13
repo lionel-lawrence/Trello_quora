@@ -30,6 +30,8 @@ public class QuestionController {
 
     @Autowired
     private QuestionService questionService;
+    
+    //This method creates a question in the Quora Application which will be shown to all the users. Any user can access this endpoint.
 
     @RequestMapping(method = RequestMethod.POST, path = "/question/create", produces = MediaType.APPLICATION_JSON_UTF8_VALUE)
     public ResponseEntity<QuestionResponse> createQuestion(@RequestHeader("authorization") final String accessToken, QuestionRequest questionRequest) throws AuthorizationFailedException {
@@ -43,6 +45,8 @@ public class QuestionController {
         return new ResponseEntity<QuestionResponse>(questionResponse, HttpStatus.CREATED);
     }
 
+    //This method fetches all the questions that have been posted in the application by any user. Any user can access this endpoint.
+    
     @RequestMapping(method = RequestMethod.GET,path = "/question/all",produces = MediaType.APPLICATION_JSON_UTF8_VALUE)
     public ResponseEntity<List<QuestionDetailsResponse>> getAllQuestions(
             @RequestHeader("authorization") final String accessToken)
@@ -58,6 +62,7 @@ public class QuestionController {
         return new ResponseEntity<List<QuestionDetailsResponse>>(questionDetailResponses, HttpStatus.OK);
     }
 
+    //This method edits a question that has been posted by a user. Only the owner of the question can edit the question.  
     @RequestMapping(method = RequestMethod.PUT, path = "/question/edit/{questionId}", produces = MediaType.APPLICATION_JSON_UTF8_VALUE)
     public ResponseEntity<QuestionEditResponse> editQuestion(
             @RequestHeader("authorization") final String accessToken,
@@ -71,6 +76,8 @@ public class QuestionController {
         questionEditResponse.setStatus("QUESTION EDITED");
         return new ResponseEntity<QuestionEditResponse>(questionEditResponse, HttpStatus.OK);
     }
+    
+    //This endpoint method deletes a question that has been posted by a user. Only the question owner of the question or admin can delete a question.
 
     @RequestMapping(method = RequestMethod.DELETE, path = "/question/delete/{questionId}")
     public ResponseEntity<QuestionDeleteResponse> deleteQuestion(
@@ -84,6 +91,8 @@ public class QuestionController {
         questionDeleteResponse.setStatus("QUESTION DELETED");
         return new ResponseEntity<QuestionDeleteResponse>(questionDeleteResponse, HttpStatus.OK);
     }
+    
+    //This last method is to fetch all the questions posted by a specific user. Any user can access this endpoint.
 
     @RequestMapping(
             method = RequestMethod.GET,
