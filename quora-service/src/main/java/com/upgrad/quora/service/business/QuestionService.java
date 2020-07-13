@@ -25,6 +25,8 @@ public class QuestionService {
     @Autowired
     private UserDao userDao;
 
+    //This service class holds the logic for the functioning of the Question controller and connection with the Question Dao layer.
+    
     @Transactional(propagation = Propagation.REQUIRED)
     public QuestionEntity createQuestion(final String accessToken, QuestionEntity questionEntity) throws AuthorizationFailedException {
         UserAuthEntity authEntity = userDao.getUserAuthByToken(accessToken);
