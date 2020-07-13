@@ -24,10 +24,11 @@ IntelliJ
 SignUp github     
 
 Running the tests   
-"mvn clean install -Psetup" in the quora-db folder of the project. 
+Junit is used for all test cases,"mvn clean install -Psetup" in the quora-db folder of the project. 
 
 Deployment     
-
+The Rest API is deployed using spring,for MVC architecture and Apache Tomcat 8(8.0.53)
+https://tomcat.apache.org/tomcat-8.0-doc/deployer-howto.html#:~:text=The%20Tomcat%20Manager%20is%20a,for%20Apache%20Ant%20build%20tool
 
 Built With      
 Swagger UI  - The web framework used   
@@ -43,8 +44,8 @@ List of Contributors :
 
 Lionel Lawrence      - Group Facilitator    
 Sawan Verma          - Group Member   
-Deavyansh .G         - Group Member   
 Bindu Sowjanya S.R.  - Group Member   
+Deavyansh.G          - Group Member
 
 License
 This project is licensed under the Upgrad License .
