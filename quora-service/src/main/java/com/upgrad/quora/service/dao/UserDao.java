@@ -13,6 +13,8 @@ public class UserDao {
 
     @PersistenceContext
     private EntityManager entityManager;
+    
+    //This Dao class provides an abstract interface of the UserDao repository to the database of this application.
 
     public UserEntity createUser(UserEntity userEntity){
         entityManager.persist(userEntity);
