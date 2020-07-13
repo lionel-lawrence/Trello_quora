@@ -1,4 +1,4 @@
-**/target
+*/target/**
 .bob/
 .classpath/
 .m2/
