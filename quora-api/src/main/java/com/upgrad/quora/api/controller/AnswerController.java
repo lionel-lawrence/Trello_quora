@@ -25,6 +25,8 @@ import java.util.ArrayList;
 public class AnswerController {
     @Autowired
     private AnswerService answerService;
+    
+    //The purpose of this endpoint is to create an answer to a particular question. It has  Any user can access this endpoint.
 
     @RequestMapping(method = RequestMethod.POST,path = "/question/{qnId}/answer/create", produces = MediaType.APPLICATION_JSON_UTF8_VALUE)
     public ResponseEntity<AnswerResponse> createAnswer(@RequestHeader("authorization") final String accessToken, @PathVariable("qnId") final String questionId, com.upgrad.quora.api.model.AnswerRequest answerRequest) throws AuthorizationFailedException, InvalidQuestionException {
@@ -36,7 +38,10 @@ public class AnswerController {
         answerResponse.setStatus("ANSWER CREATED");
         return new ResponseEntity<AnswerResponse>(answerResponse, HttpStatus.CREATED);
     }
-
+    
+    
+    //This endpoint is used to edit an answer. Only the owner of the answer can edit the answer.
+    
     @RequestMapping(
             method = RequestMethod.PUT,
             path = "/answer/edit/{answerId}",
@@ -53,6 +58,8 @@ public class AnswerController {
         answerEditResponse.setStatus("ANSWER EDITED");
         return new ResponseEntity<AnswerEditResponse>(answerEditResponse, HttpStatus.OK);
     }
+    
+    //This endpoint is used to delete an answer. Only the owner of the answer or admin can delete an answer.
 
     @RequestMapping(
             method = RequestMethod.DELETE,
@@ -67,6 +74,8 @@ public class AnswerController {
                 new AnswerDeleteResponse().id(answerEntity.getUuid()).status("ANSWER DELETED");
         return new ResponseEntity<AnswerDeleteResponse>(answerDeleteResponse, HttpStatus.OK);
     }
+    
+    //This endpoint gets all answers to a particular question. Any user can access this endpoint.
 
     @RequestMapping(
             method = RequestMethod.GET,
