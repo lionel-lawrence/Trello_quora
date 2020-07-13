@@ -15,6 +15,8 @@ public class QuestionDao {
 
     @PersistenceContext
     private EntityManager entityManager;
+    
+    //This Dao class provides an abstract interface of the Question repository to the database of this application.
 
     @Transactional
     public QuestionEntity createQuestion(QuestionEntity questionEntity){
